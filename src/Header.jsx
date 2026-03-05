@@ -1,9 +1,9 @@
-function Header(){
+function Header(props) {
     return(
         <header> 
-            <h1> Header Componet</h1>
+            <h1> Bem vindo <br/> {props.title}</h1>
         </header> 
-);
+)
 }
 
 export default Header;
