@@ -1,9 +1,10 @@
+// Produto.jsx
 function Produto(props) {
-    return(
-        <body> 
-            <h1> Bem vindo <br/> {props.produto}</h1>
-        </body> 
-)
+  return (
+    <div> 
+      <h1> Teste {props.nome}</h1>
+    </div> 
+  );
 }
 
 export default Produto;
