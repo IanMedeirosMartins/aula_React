@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import '../App.css';
 import Header from '../Header';
 import Produto from '../Produto';
+import { Link,Navigate, useNavigate} from 'react-router-dom';
+ 
 
 function App() {
   const[contador, setContador]= useState(0);
+  const navigate = useNavigate();
   function increment(){
     setContador(contador+1);
   }
-
+   
   var usuario = "Ian";
  const test = [];
   return (
@@ -16,6 +19,7 @@ function App() {
       <header className="App-header">
         <Header title={usuario}/>
         <img src="Octocat.png" className="App-logo" alt="logo" />
+        <button onClick={() => navigate('/cadastro')}>Acessar cadastro</button>
        <h1>Projeto Aulas 2026.1</h1>
         <p>
           <input type="button" value="Clique" onClick={increment} />
