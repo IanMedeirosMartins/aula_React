@@ -1,4 +1,4 @@
-// /api-cadastro.js
+// /api-cadastro.cjs
 const express = require('express');
 const app = express();
 const cadastros = [];
