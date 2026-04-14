@@ -2,50 +2,37 @@ import { useEffect, useState } from 'react';
 import Header from '../Header';
 import axios from 'axios';
 
+
 function Form() {
 
     const [Campos, setCampos] = useState({
         txtNome: '',
-        txtIdade: '',
-        cmbUF: '0'
-    });
-
-    // ✅ Corrigido (NÃO muta o state direto)
+        txtIdade: '0',
+        cmbuf: '0'
+});
     function handleInputChange(event) {
-        const { name, value } = event.target;
-
-        setCampos({
-            ...Campos,
-            [name]: value
-        });
+        Campos[event.target.name] = event.target.value;
+        setCampos(Campos);
     }
 
-    // ✅ Envio pro backend
     function handleFormSubmit(event) {
         event.preventDefault();
-
-        axios.post('http://localhost:3001/cadastro', Campos)
-        .then(response => {
+        axios.post('https://didactic-acorn-4jxg79g4g9p36q5-3001.app.github.dev/cadastro', Campos).then(response => {
             alert(response.data.dados.length + " cadastros!");
         })
-        .catch(error => {
-            console.error(error);
-        });
     }
 
     const [estados, setEstados] = useState([]);
-
     useEffect(() => {
-        axios.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
-        .then(response => {
+        axios.get('https://servicodados.ibge.gov.br/api/v1/localidades/estados').then(response => {
             setEstados(response.data);
         });
     }, []);
 
     return (
+
         <div>
             <Header title="React Form" />
-
             <form onSubmit={handleFormSubmit}>
                 <fieldset>
                     <legend>
@@ -54,39 +41,21 @@ function Form() {
 
                     <div>
                         <label>Nome:
-                            <input
-                                type="text"
-                                name="txtNome"
-                                value={Campos.txtNome}
-                                onChange={handleInputChange}
-                            />
+                            <input type="text" name="txtNome" id="txtNome" onChange={handleInputChange} />
                         </label>
                     </div>
 
                     <div>
                         <label>Idade:
-                            <input
-                                type="number"
-                                name="txtIdade"
-                                value={Campos.txtIdade}
-                                onChange={handleInputChange}
-                            />
+                            <input type="number" name="txtIdade" id="txtIdade" onChange={handleInputChange} />
                         </label>
                     </div>
 
                     <div>
                         <label>UF:
-                            <select
-                                name="cmbUF"
-                                value={Campos.cmbUF}
-                                onChange={handleInputChange}
-                            >
+                            <select name="cmbUF" id="cmbUF" onChange={handleInputChange}>
                                 <option value="0">Selecione uma opção</option>
-                                {estados.map(estado => (
-                                    <option key={estado.sigla} value={estado.sigla}>
-                                        {estado.sigla}
-                                    </option>
-                                ))}
+                                {estados.map(estado => (<option key={estado.sigla} value={estado.sigla}>{estado.sigla}</option>))}
                             </select>
                         </label>
                     </div>
@@ -94,8 +63,11 @@ function Form() {
                     <input type="submit" value="Salvar" />
                 </fieldset>
             </form>
+
         </div>
     )
 }
 
 export default Form;
+
+
