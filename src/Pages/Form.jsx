@@ -11,16 +11,24 @@ function Form() {
         cmbuf: '0'
 });
     function handleInputChange(event) {
-        Campos[event.target.name] = event.target.value;
-        setCampos(Campos);
-    }
+    const { name, value } = event.target;
 
-    function handleFormSubmit(event) {
-        event.preventDefault();
-        axios.post('https://didactic-acorn-4jxg79g4g9p36q5-3001.app.github.dev/cadastro', Campos).then(response => {
-            alert(response.data.dados.length + " cadastros!");
-        })
+    setCampos(prevState => ({
+        ...prevState,
+        [name]: value
+    }));
+}
+
+    async function handleFormSubmit(event) {
+    event.preventDefault();
+
+    try {
+        await axios.post('http://localhost:3001/pessoas', Campos);
+        alert("Dados enviados com sucesso!");
+    } catch (error) {
+        console.error(error);
     }
+}
 
     const [estados, setEstados] = useState([]);
     useEffect(() => {

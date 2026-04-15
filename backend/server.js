@@ -1,64 +1,64 @@
-const express = require("express");
-const cors = require("cors");
-const sqlite3 = require("sqlite3").verbose();
+
+const express = require('express');
+const cors = require('cors');
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-// Banco de dados
-const db = new sqlite3.Database("./database.db");
+let pessoas = [];
 
-// Criar tabela
-db.run(`
-  CREATE TABLE IF NOT EXISTS pessoas (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome TEXT,
-    idade INTEGER,
-    uf TEXT
-  )
-`);
+//criar
+app.post('/pessoas', (req, res) => {
+    const { txtNome, txtIdade, cmbUF} = req.body;
 
-// 🔹 CREATE
-app.post("/pessoas", (req, res) => {
-  const { nome, idade, uf } = req.body;
-  db.run(
-    "INSERT INTO pessoas (nome, idade, uf) VALUES (?, ?, ?)",
-    [nome, idade, uf],
-    function (err) {
-      if (err) return res.status(500).json(err);
-      res.json({ id: this.lastID });
+    const novaPessoa = {
+        id: Date.now(),
+        nome: txtNome,
+        idade: txtIdade,
+        uf: cmbUF
+    };
+
+    pessoas.push(novaPessoa);
+
+    res.json(novaPessoa);
+});
+ //listar
+app.get('/pessoas', (req, res) => {
+    res.json(pessoas);
+});
+
+// atualizar
+app.put('/pessoas/:id', (req, res) => {
+    const { id } = req.params;
+    const { txtNome, txtIdade, cmbUF } = req.body;
+
+    const index = pessoas.findIndex(p => p.id == id);
+
+    if (index !== -1) {
+        pessoas[index] = {
+            id: Number(id),
+            nome: txtNome,
+            idade: txtIdade,
+            uf: cmbUF
+        };
+
+        res.json(pessoas[index]);
+    } else {
+        res.status(404).json({ erro: "Pessoa não encontrada" });
     }
-  );
 });
 
-// 🔹 READ
-app.get("/pessoas", (req, res) => {
-  db.all("SELECT * FROM pessoas", [], (err, rows) => {
-    if (err) return res.status(500).json(err);
-    res.json(rows);
-  });
+// deletar
+app.delete('/pessoas/:id', (req, res) => {
+    const { id } = req.params;
+
+    pessoas = pessoas.filter(p => p.id !== Number(id));
+
+    res.json({ mensagem: "Removido com sucesso" });
 });
 
-// 🔹 UPDATE
-app.put("/pessoas/:id", (req, res) => {
-  const { nome, idade, uf } = req.body;
-  db.run(
-    "UPDATE pessoas SET nome=?, idade=?, uf=? WHERE id=?",
-    [nome, idade, uf, req.params.id],
-    function (err) {
-      if (err) return res.status(500).json(err);
-      res.json({ updated: this.changes });
-    }
-  );
+app.listen(3001, () => {
+    console.log("Servidor rodando na porta 3001");
 });
-
-// 🔹 DELETE
-app.delete("/pessoas/:id", (req, res) => {
-  db.run("DELETE FROM pessoas WHERE id=?", req.params.id, function (err) {
-    if (err) return res.status(500).json(err);
-    res.json({ deleted: this.changes });
-  });
-});
-
-app.listen(3001, () => console.log("Servidor rodando na porta 3001"));
