@@ -25,7 +25,7 @@ function Form() {
         event.preventDefault();
 
         axios.post('https://didactic-acorn-4jxg79g4g9p36q5-3001.app.github.dev/cadastro', Campos).then(response => {
-            alert(response.data.dados.length + " cadastros!");
+            alert('Dados enviados com sucesso!');
         })
         .catch(error => {
             console.error(error);
